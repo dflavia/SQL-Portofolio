@@ -29,7 +29,8 @@ If a team draws a match (scores exactly the same number of goals as the opponent
 If a team loses a match (scores fewer goals than the opponent), it receives no points.
 
 Write an SQL query that returns a ranking of all teams (team_id) described in the table teams.
-For each team you should provide its name and the number of points it received after all described matches (num_points). The table should be ordered by num_points (in decreasing order). In case of a tie, order the rows by team_id (in increasing order).
+For each team you should provide its name and the number of points it received after all described matches (num_points). The table should be ordered by num_points (in decreasing order).
+In case of a tie, order the rows by team_id (in increasing order).
 
 For example, for:
 
