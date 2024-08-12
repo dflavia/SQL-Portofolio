@@ -1,15 +1,15 @@
-patients                                    province_names              admissions
+patients                                    province_names              	admissions
 
-patient_id	    INT                         province_id	CHAR(2)         patient_id
-first_name	    TEXT                        province_name	TEXT        admission_date
-last_name	    TEXT                                                    discharge_date
-gender	        CHAR(1)                                                 diagnosis        
-birth_date	    DATE                                                    attending_doctor_id
-city	        TEXT
-primary key 	province_id	CHAR(2)
-allergies	    TEXT
-height	        INT
-weight	        INT                                            
+patient_id	    	INT                 province_id		CHAR(2)         patient_id		INT
+first_name	    	TEXT                province_name	TEXT         	admission_date		DATE
+last_name	    	TEXT                                                    discharge_date		DATE
+gender	            	CHAR(1)                                                 diagnosis        	TEXT
+birth_date	    	DATE                                                    attending_doctor_id	INT
+city	            	TEXT
+primary key province_id	CHAR(2)
+allergies	    	TEXT
+height	        	INT
+weight	        	INT                                            
 
 
 
