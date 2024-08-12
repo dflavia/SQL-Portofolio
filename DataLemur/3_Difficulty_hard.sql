@@ -115,6 +115,39 @@ FROM (
      ) t
 ORDER BY total_cost DESC, pizza;
 
+-- OR
+
+WITH RECURSIVE all_toppings AS
+(-- write non-recursive query or anchor
+  SELECT
+    topping_name::VARCHAR, -- PSQL limitation, need to explicitly CAST as VARCHAR
+    ingredient_cost::DECIMAL, -- PSQL limitation, need to explicitly CAST as VARCHAR
+    1 AS topping_number
+  FROM pizza_toppings
+  
+  UNION ALL
+  
+  -- write recursive query; will iterate until termination condition
+  SELECT
+    CONCAT(addon.topping_name, ',', anchor.topping_name) AS topping_name, -- CONCAT to combine 2 or more toppings
+    addon.ingredient_cost + anchor.ingredient_cost AS total_cost, -- sum up cost of all used toppings
+    topping_number + 1 -- increment topping number used in pizza
+  FROM
+    pizza_toppings AS addon,
+    all_toppings AS anchor
+  WHERE anchor.topping_name < addon.topping_name -- termination condition, prevents the same topping names from showing up multiple times in the combination
+)
+
+SELECT
+  STRING_AGG(single_topping,',' ORDER BY single_topping) AS pizza, -- use STRING_AGG to order single_toppings alphabetically and join into one string
+  ingredient_cost
+FROM 
+  all_toppings,
+  REGEXP_SPLIT_TO_TABLE(topping_name, ',') AS single_topping -- split ',' separated string into multiple rows that will be ordered by STRING_AGG
+WHERE topping_number = 3 -- filter only for 3-ingredient pizza
+GROUP BY topping_name, ingredient_cost -- GROUP BY due to aggregate function STRING_AGG
+ORDER BY ingredient_cost DESC, pizza
+
 
 -- Repeated Payments [Stripe SQL Interview Question]
 -- transactions(transaction_id, merchant_id, credit_card_id, amount, transaction_timestamp)
