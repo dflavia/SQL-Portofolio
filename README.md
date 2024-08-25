@@ -1,4 +1,4 @@
-# Flavia Dragomir's SQL Portofolio
+# 🚧 Flavia Dragomir's SQL Portofolio 🚧
 
 Hello and thanks for stopping by!
 
