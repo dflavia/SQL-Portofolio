@@ -1,9 +1,9 @@
-patients(patient_id	INT, first_name TEXT, last_name TEXT, gender CHAR(1), birth_date DATE, city TEXT, primary key province_id CHAR(2), allergies TEXT, height INT, weight INT)                                                 	
+patients(patient_id INT, first_name TEXT, last_name TEXT, gender CHAR(1), birth_date DATE, city TEXT, primary key province_id CHAR(2), allergies TEXT, height INT, weight INT)                                                 	
 province_names(province_id CHAR(2), province_name TEXT)
 admissions(patient_id INT, admission_date DATE, discharge_date DATE, diagnosis TEXT, attending_doctor_id INT)
 doctors(doctor_id INT, first_name TEXT, last_name TEXT, specialty TEXT)
-     
-                                         
+
+
 -- Show first name, last name, and gender of patients whose gender is 'M'
 
 SELECT

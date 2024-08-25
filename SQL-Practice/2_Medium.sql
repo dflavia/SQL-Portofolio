@@ -17,7 +17,7 @@ FROM (
           COUNT(*) as cnt
       FROM patients
   	  GROUP BY first_name
-	) t
+	 ) t
 WHERE cnt = 1
 
 
