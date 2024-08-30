@@ -85,7 +85,7 @@ CREATE TABLE resort_facilities (
 );
 
 
--- 3. resort_facilities - used in order to convert the resort prices from local currency (as is the source data in resorts table) to EUR figures
+-- 3. resort_fx_conversion - used in order to convert the resort prices from local currency (as is the source data in resorts table) to EUR figures
 
 CREATE TABLE resort_fx_conversion (
 	resort_currency CHAR(3) PRIMARY KEY,
