@@ -112,3 +112,85 @@ WHERE
 | 145     | 117       | 46               |
 | 142     | 26        | 32               |
 | 7       | 14        | 77               |
+
+
+
+-- Replace the trailing roman numerals from the professions in users table
+
+-- Take for example the sample data for table users:
+
+| user_id | first_name | last_name   | email                         | phone_number | gender | country_of_origin | date_of_birth | profession                |
+| ------- | ---------- | ----------- | ----------------------------- | ------------ | ------ | ----------------- | ------------- | ------------------------- |
+| 193     | Giffy      | Ionnidis    | gionnidis5c@cocolog-nifty.com | 349-278-2607 | Male   | Bulgaria          | 27-10-80      | Programmer II             |
+| 194     | Garrard    | McCarron    | gmccarron5d@i2i.jp            | 434-603-7331 | Male   | Argentina         | 16-06-51      | Developer II              |
+| 195     | Raimund    | Cuttell     | NULL                          | 628-138-5750 | Male   | Russia            | 19-01-63      | Environmental Specialist  |
+| 196     | Rozella    | Banaszewski | rbanaszewski5f@mapquest.com   | 598-170-4817 | Female | Poland            | 12-08-76      | NULL                      |
+| 197     | Roslyn     | Cleft       | rcleft5g@booking.com          | 453-503-3339 | Female | Guatemala         | 20-12-80      | Account Representative II |
+
+
+UPDATE users u
+SET profession = t.updated_profession
+FROM (
+		SELECT
+			user_id,
+			REGEXP_REPLACE(profession, '\s[IV]+$','') AS updated_profession -- \s ensure that roman numerals are preceded by a space, +$ ensure that roman numerals are at the end of the value
+		FROM users
+	) t
+WHERE u.user_id = t.user_id
+
+
+-- Result set sample:
+
+| user_id | first_name | last_name   | email                         | phone_number | gender | country_of_origin | date_of_birth | profession               |
+| ------- | ---------- | ----------- | ----------------------------- | ------------ | ------ | ----------------- | ------------- | ------------------------ |
+| 193     | Giffy      | Ionnidis    | gionnidis5c@cocolog-nifty.com | 349-278-2607 | Male   | Bulgaria          | 27-10-80      | Programmer               |
+| 194     | Garrard    | McCarron    | gmccarron5d@i2i.jp            | 434-603-7331 | Male   | Argentina         | 16-06-51      | Developer                |
+| 195     | Raimund    | Cuttell     | NULL                          | 628-138-5750 | Male   | Russia            | 19-01-63      | Environmental Specialist |
+| 196     | Rozella    | Banaszewski | rbanaszewski5f@mapquest.com   | 598-170-4817 | Female | Poland            | 12-08-76      | NULL                     |
+| 197     | Roslyn     | Cleft       | rcleft5g@booking.com          | 453-503-3339 | Female | Guatemala         | 20-12-80      | Account Representative   |
+
+
+
+-- Create a view for users table that will display:
+-- full name as 'last_name, first_name' instead of first_name and last_name
+-- gender as either M or F (instead of 'Male' or 'Female')
+-- age instead of date_of_birth
+
+-- Take for example the sample data for table users:
+
+| user_id | first_name | last_name | email                        | phone_number | gender | country_of_origin        | date_of_birth | profession            |
+| ------- | ---------- | --------- | ---------------------------- | ------------ | ------ | ------------------------ | ------------- | --------------------- |
+| 1       | Curr       | Mushawe   | cmushawe0@newyorker.com      | 245-524-7170 | Male   | Poland                   | 22-10-86      | NULL                  |
+| 2       | Fredericka | Hickisson | fhickisson1@flavors.me       | 358-686-3248 | Female | China                    | 02-11-06      | NULL                  |
+| 3       | Verena     | Gonsalvez | vgonsalvez2@reverbnation.com | 305-632-9817 | Female | Kazakhstan               | 15-06-56      | Systems Administrator |
+| 4       | Estell     | Tivers    | etivers3@imdb.com            | 906-642-7546 | Female | Argentina                | 01-01-12      | NULL                  |
+| 5       | Bordy      | Vitler    | bvitler4@nydailynews.com     | 848-962-8647 | Male   | Central African Republic | 05-03-00      | NULL                  |
+
+
+CREATE VIEW users_view AS
+	
+SELECT
+	user_id,
+	CONCAT(last_name,', ',first_name) AS full_name,
+	email,
+	phone_number,
+	CASE
+		WHEN gender = 'Male' THEN 'M'
+		WHEN gender = 'Female' THEN 'F'
+	END AS gender,
+	country_of_origin,
+	EXTRACT(YEAR FROM AGE(current_date, date_of_birth)) AS age,
+	profession
+FROM users
+ORDER BY user_id
+
+
+-- Result set sample:
+
+| user_id | full_name             | email                        | phone_number | gender | country_of_origin        | age | profession            |
+| ------- | --------------------- | ---------------------------- | ------------ | ------ | ------------------------ | --- | --------------------- |
+| 1       | Mushawe, Curr         | cmushawe0@newyorker.com      | 245-524-7170 | M      | Poland                   | 37  | NULL                  |
+| 2       | Hickisson, Fredericka | fhickisson1@flavors.me       | 358-686-3248 | F      | China                    | 17  | NULL                  |
+| 3       | Gonsalvez, Verena     | vgonsalvez2@reverbnation.com | 305-632-9817 | F      | Kazakhstan               | 68  | Systems Administrator |
+| 4       | Tivers, Estell        | etivers3@imdb.com            | 906-642-7546 | F      | Argentina                | 12  | NULL                  |
+| 5       | Vitler, Bordy         | bvitler4@nydailynews.com     | 848-962-8647 | M      | Central African Republic | 24  | NULL                  |
