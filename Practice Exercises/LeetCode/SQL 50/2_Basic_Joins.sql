@@ -67,18 +67,13 @@ AND DATEDIFF(recorddate, prevday) = 1
 
 SELECT
     machine_id,
-    ROUND(SUM(timediff) / COUNT(DISTINCT process_id),3) AS processing_time
-FROM(
-SELECT
-    *,
-    timestamp - prevtime AS timediff
-FROM(
-SELECT 
-    *,
-    LAG(timestamp,1) OVER (PARTITION BY machine_id, process_id ORDER BY activity_type ) AS prevtime
-FROM activity
+    ROUND(AVG(timestamp - prevtime),3) AS processing_time
+FROM (
+        SELECT
+            *,
+            LAG(timestamp) OVER (PARTITION BY machine_id, process_id ORDER BY activity_type) AS prevtime
+        FROM activity
 ) t1
-) t2
 GROUP BY machine_id
 
 
