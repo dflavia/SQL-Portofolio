@@ -48,7 +48,7 @@ GROUP BY 1
 | --------------- | ------------------- | ------------------------------------------------------------------------------------- |
 | Brazil          | 3                   | Power Nap Place, Sleepyhead Shores, The Rest & Relax                                  |
 | Colombia        | 2                   | Chillax Cove, Do Nothing Dome                                                         |
-| France          | 5                   | Chillaxation Station, Slackers Paradise, Snuggle Sands, Unwind Utopia, Unwind Waters |
+| France          | 5                   | Chillaxation Station, Slackers Paradise, Snuggle Sands, Unwind Utopia, Unwind Waters  |
 | Greece          | 2                   | The Lazy Lobster, The Slack Shack                                                     |
 
 
@@ -217,3 +217,42 @@ ORDER BY 1
 | 2020      | 6.90%                       |
 | 2022      | 3.13%                       |
 
+----------------------------------
+
+
+SELECT
+	t1.airline,
+	t1.year,
+	t1.total_revenue_eur,
+	t1.rank_revenue,
+	CONCAT(
+			COALESCE(
+					ROUND(
+							100.00 * (
+										t1.total_revenue_eur - LAG(t1.total_revenue_eur) OVER (PARTITION BY t1.airline ORDER BY t1.year)
+									 )
+										/ LAG(t1.total_revenue_eur) OVER (PARTITION BY t1.airline ORDER BY t1.year)
+						,2)
+				,0)
+			,'%') AS growth_percentage,
+	t1.flights_per_airline_per_year,
+	CONCAT(ROUND(100.00 * t1.flights_per_airline_per_year / t2.flights_per_year,2),'%') AS flights_percentage
+FROM (
+		SELECT
+			airline,
+			EXTRACT(YEAR FROM flight_date) AS year,
+			SUM(f.flight_amount_eur) AS total_revenue_eur,
+			DENSE_RANK() OVER (PARTITION BY EXTRACT(YEAR FROM flight_date) ORDER BY SUM(flight_amount_eur) DESC) AS rank_revenue,
+			COUNT(flight_id) AS flights_per_airline_per_year
+		FROM flights f
+		--INNER JOIN user_flights uf ON f.flight_id = uf.flight_id
+		GROUP BY airline, EXTRACT(YEAR FROM flight_date)
+		ORDER BY year
+	) t1
+
+INNER JOIN (SELECT
+				EXTRACT(YEAR FROM flight_date) AS year,
+				COUNT(*) AS flights_per_year
+			FROM flights
+			GROUP BY EXTRACT(YEAR FROM flight_date)
+			) t2 ON t1.year = t2.year
