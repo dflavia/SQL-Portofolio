@@ -117,6 +117,21 @@ WHERE (customer_id, order_date) IN (
                                     FROM delivery
                                     GROUP BY customer_id
                                     )
+
+-- OR
+
+WITH T1 AS
+(SELECT
+    *,
+    RANK() OVER (PARTITION BY customer_id ORDER BY order_date) AS r1,
+    CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END AS type
+FROM delivery
+)
+
+SELECT
+    ROUND(100 * AVG(type),2) AS immediate_percentage
+FROM T1
+WHERE r1 = 1
                                     
 
 -- 550. Game Play Analysis IV
