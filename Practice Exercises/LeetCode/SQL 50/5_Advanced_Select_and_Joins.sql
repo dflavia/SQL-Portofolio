@@ -15,6 +15,29 @@ WHERE e1.reports_to IS NOT NULL
 GROUP BY e1.reports_to
 ORDER BY e1.reports_to
 
+-- OR
+
+SELECT
+    e.employee_id,
+    e.name,
+    T.reports_count,
+    T.average_age
+FROM employees e
+INNER JOIN 
+
+        (SELECT
+            reports_to,
+            COUNT(reports_to) AS reports_count,
+            ROUND(AVG(age)) AS average_age
+        FROM employees
+        WHERE reports_to IS NOT NULL
+        GROUP BY reports_to) AS T
+
+        ON e.employee_id = T.reports_to
+
+ORDER BY employee_id
+
+
 
 -- 1789. Primary Department for Each Employee
 -- employee(employee_id, department_id, primary_flag)
