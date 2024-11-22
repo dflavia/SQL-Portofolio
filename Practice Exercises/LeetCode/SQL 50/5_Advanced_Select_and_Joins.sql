@@ -70,12 +70,12 @@ SELECT
     y,
     z,
     CASE
-        WHEN x + y <= z
-          OR x + z <= y
-          OR y + z <= x
-        THEN 'No'
-        ELSE 'Yes'
-    END AS 'triangle'
+        WHEN x + y > z -- ANY 2 sides should be greater than the third for a triangle, hence 'AND'
+            AND x + z > y 
+            AND y + z > x
+        THEN 'Yes'
+        ELSE 'No'
+    END AS triangle
 FROM triangle
 
 
