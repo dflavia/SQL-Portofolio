@@ -123,7 +123,7 @@ WHERE (customer_id, order_date) IN (
 WITH T1 AS
 (SELECT
     *,
-    RANK() OVER (PARTITION BY customer_id ORDER BY order_date) AS r1,
+    ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date) AS r1,
     CASE WHEN order_date = customer_pref_delivery_date THEN 1 ELSE 0 END AS type
 FROM delivery
 )
