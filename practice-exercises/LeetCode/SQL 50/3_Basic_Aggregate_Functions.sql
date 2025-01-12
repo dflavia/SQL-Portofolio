@@ -101,7 +101,7 @@ SELECT ROUND(AVG(order_date = customer_pref_delivery_date) * 100,2) AS immediate
 FROM(
     SELECT
         customer_id,
-        RANK() OVER (PARTITION BY customer_id ORDER BY order_date) AS rank1,
+        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date) AS rank1,
         order_date,
         customer_pref_delivery_date
     FROM delivery
