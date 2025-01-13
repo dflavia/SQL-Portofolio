@@ -25,6 +25,16 @@ WHERE DATEDIFF('2019-07-27',activity_date) BETWEEN 0 AND 29
 GROUP BY activity_date
 ORDER BY activity_date
 
+-- OR
+
+SELECT
+    activity_date AS day,
+    COUNT(DISTINCT user_id) AS active_users
+FROM activity
+WHERE activity_date BETWEEN DATE_SUB('2019-07-27', INTERVAL 29 DAY) AND '2019-07-27'
+GROUP BY activity_date
+ORDER BY 1
+
 
 -- 1070. Product Sales Analysis III
 -- sales(sale_id, product_id, year, quantity, price)
