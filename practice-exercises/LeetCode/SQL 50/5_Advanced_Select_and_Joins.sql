@@ -11,7 +11,6 @@ SELECT
     ROUND(AVG(e1.age)) AS average_age
 FROM employees e1
 INNER JOIN employees e2 ON e1.reports_to = e2.employee_id
-WHERE e1.reports_to IS NOT NULL
 GROUP BY e1.reports_to
 ORDER BY e1.reports_to
 
